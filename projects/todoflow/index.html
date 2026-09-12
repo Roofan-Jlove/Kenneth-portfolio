@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToDoFlow — Organize your day, effortlessly</title>
+<meta name="description" content="ToDoFlow — a fast, minimal to-do app inspired by Apple and Linear.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="bg-orbs" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      ToDoFlow
+    </div>
+    <div class="topbar-actions">
+      <button class="profile-chip" id="profile-chip" title="View profile" aria-haspopup="dialog" style="display:none;">
+        <span class="avatar" id="profile-chip-avatar">🙂</span>
+        <span class="info">
+          <span class="pname" id="profile-chip-name">Guest</span>
+          <span class="plevel" id="profile-chip-level">Lv 1 · 0 XP</span>
+        </span>
+      </button>
+      <div class="theme-toggle" role="group" aria-label="Theme toggle">
+        <button id="theme-dark-btn" title="Dark mode" aria-label="Dark mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button id="theme-light-btn" title="Light mode" aria-label="Light mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <span class="hero-eyebrow"><span class="dot"></span> Saved automatically, on this device</span>
+    <h1>Organize your day.<br><span class="grad">Effortlessly.</span></h1>
+    <p>A fast, minimal to-do list. Add a task, cross it off, keep moving — everything stays right where you left it.</p>
+  </section>
+
+  <div class="tagline-marquee" aria-hidden="true">
+    <div class="tagline-track" id="tagline-track">
+      <!-- items are duplicated via JS for a seamless loop -->
+      <span class="tagline-item">Organize <span class="grad">effortlessly.</span></span>
+      <span class="tagline-sep"></span>
+      <span class="tagline-item">Add a task in under a second</span>
+      <span class="tagline-sep"></span>
+      <span class="tagline-item">Nothing lost, nothing forgotten</span>
+      <span class="tagline-sep"></span>
+      <span class="tagline-item">Built for <span class="grad">calm productivity.</span></span>
+      <span class="tagline-sep"></span>
+      <span class="tagline-item">Your list, always in sync</span>
+      <span class="tagline-sep"></span>
+      <span class="tagline-item">Clear your head, not just your list</span>
+    </div>
+  </div>
+
+  <main class="card">
+    <form class="composer" id="composer">
+      <div class="composer-row">
+        <input class="input" type="text" id="task-input" placeholder="Add a task and press Enter…" autocomplete="off" maxlength="200" autofocus>
+        <button type="submit" class="btn btn-primary" id="add-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Add
+        </button>
+      </div>
+      <div class="composer-meta">
+        <div class="meta-field date-field" id="date-field">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <button type="button" class="date-trigger" id="date-trigger" aria-haspopup="dialog" aria-expanded="false">
+            <span id="date-trigger-label">Pick a date</span>
+          </button>
+          <div class="date-menu" id="date-menu" role="dialog" aria-label="Choose a due date">
+            <div class="cal-header">
+              <button type="button" class="cal-nav-btn" id="cal-prev" aria-label="Previous month">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <span class="cal-label" id="cal-label">July 2026</span>
+              <button type="button" class="cal-nav-btn" id="cal-next" aria-label="Next month">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div class="cal-weekdays">
+              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="cal-footer">
+              <button type="button" class="cal-clear-btn" id="cal-clear">Clear</button>
+              <button type="button" class="cal-today-btn" id="cal-today">Today</button>
+            </div>
+          </div>
+        </div>
+        <div class="meta-field priority-field" id="priority-field">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22V15"/></svg>
+          <button type="button" class="priority-trigger" id="priority-trigger" aria-haspopup="listbox" aria-expanded="false">
+            <span id="priority-trigger-label">No priority</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="priority-menu" id="priority-menu" role="listbox" aria-label="Priority">
+            <div class="priority-option active" role="option" aria-selected="true" data-value="">
+              <span class="dot"></span>No priority
+              <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div class="priority-option" role="option" aria-selected="false" data-value="low">
+              <span class="dot low"></span>Low
+              <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div class="priority-option" role="option" aria-selected="false" data-value="medium">
+              <span class="dot medium"></span>Medium
+              <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div class="priority-option" role="option" aria-selected="false" data-value="high">
+              <span class="dot high"></span>High
+              <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="meta-field exp-field" title="EXP reward (max 50)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+          <div class="exp-stepper" id="exp-stepper">
+            <button type="button" class="stepper-btn" id="exp-minus" aria-label="Decrease EXP" disabled>−</button>
+            <span class="stepper-value" id="exp-value">0 XP</span>
+            <button type="button" class="stepper-btn" id="exp-plus" aria-label="Increase EXP">+</button>
+          </div>
+        </div>
+        <button type="button" class="meta-field repeat-toggle" id="repeat-toggle" aria-pressed="false" title="Repeat this task every day">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          Repeat daily
+        </button>
+      </div>
+      <div class="xp-bar-caption" id="exp-hint">Optional — stack up to 50 EXP per task in steps of 5. Complete it to claim the EXP. Turn on "Repeat daily" for tasks you want to do again each day.</div>
+    </form>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="search-input" placeholder="Search tasks… (press /)">
+      </div>
+      <div class="filters" role="group" aria-label="Filter tasks">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="active">Active</button>
+        <button class="filter-btn" data-filter="completed">Completed</button>
+      </div>
+    </div>
+
+    <ul class="list" id="task-list"></ul>
+
+    <div class="empty-state" id="empty-state">
+      <span class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M9 3v4M15 3v4M4 11h16"/><path d="M9.5 15.5l2 2 3.5-3.5"/></svg>
+      </span>
+      <h3 id="empty-title">All clear</h3>
+      <p id="empty-copy">Nothing on your list yet. Add your first task above to get started.</p>
+    </div>
+
+    <div class="listfooter">
+      <span id="remaining-count">0 tasks left</span>
+      <button class="btn btn-ghost btn-pill" id="clear-completed-btn">Clear completed</button>
+    </div>
+  </main>
+
+  <section class="story-section" aria-labelledby="story-heading">
+    <div class="eyebrow-lines"><span class="line"></span><span class="label">Why we built this</span><span class="line"></span></div>
+    <h2 class="story-heading" id="story-heading">We got tired of to‑do apps that get in the way. <em class="grad">So we built one that gets out of it.</em></h2>
+    <p class="story-copy">ToDoFlow started as a weekend frustration: every list app we tried made us sign up before we could type a single task, or buried "add" behind three taps. We wanted something as fast as a sticky note and as calm as a blank page — borrowing Apple's restraint and Linear's speed. No account, no sync delay, nothing to configure. Just a place to write down what matters and cross it off.</p>
+  </section>
+
+  <section class="quotes-section" aria-labelledby="quotes-title">
+    <div class="eyebrow-lines"><span class="line"></span><span class="label">Why people use it</span><span class="line"></span></div>
+    <h2 class="quotes-title" id="quotes-title">Built for how people <span class="grad">actually</span> get things done</h2>
+
+    <div class="quotes-row left">
+      <div class="quotes-track" id="quotes-track-1">
+        <div class="quote-card">
+          <p>"I stopped losing small tasks in my notes app. Everything lives in one place now."</p>
+          <div class="quote-who"><span class="quote-avatar">F</span><span><span class="quote-name">Freelance designer</span><br><span class="quote-role">Illustrative example</span></span></div>
+        </div>
+        <div class="quote-card">
+          <p>"Adding a task takes one keystroke. That's the whole reason I stuck with it."</p>
+          <div class="quote-who"><span class="quote-avatar">S</span><span><span class="quote-name">Software engineer</span><br><span class="quote-role">Illustrative example</span></span></div>
+        </div>
+        <div class="quote-card">
+          <p>"The light/dark toggle sounds small until you're planning your week at 11pm."</p>
+          <div class="quote-who"><span class="quote-avatar">P</span><span><span class="quote-name">Product manager</span><br><span class="quote-role">Illustrative example</span></span></div>
+        </div>
+        <div class="quote-card">
+          <p>"No sign-up, no sync delay — it just remembers what I typed yesterday."</p>
+          <div class="quote-who"><span class="quote-avatar">G</span><span><span class="quote-name">Grad student</span><br><span class="quote-role">Illustrative example</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quotes-row right">
+      <div class="quotes-track" id="quotes-track-2">
+        <div class="quote-card">
+          <p>"Filtering to just 'Active' is how I actually get through a Monday."</p>
+          <div class="quote-who"><span class="quote-avatar">M</span><span><span class="quote-name">Marketing lead</span><br><span class="quote-role">Illustrative example</span></span></div>
+        </div>
+        <div class="quote-card">
+          <p>"I use the due dates for bills and the priority tag for everything else."</p>
+          <div class="quote-who"><span class="quote-avatar">A</span><span><span class="quote-name">Parent of two</span><br><span class="quote-role">Illustrative example</span></span></div>
+        </div>
+        <div class="quote-card">
+          <p>"It's the first to-do app that didn't ask me to make an account first."</p>
+          <div class="quote-who"><span class="quote-avatar">R</span><span><span class="quote-name">Founder</span><br><span class="quote-role">Illustrative example</span></span></div>
+        </div>
+        <div class="quote-card">
+          <p>"Dragging tasks to reorder my morning is oddly satisfying."</p>
+          <div class="quote-who"><span class="quote-avatar">T</span><span><span class="quote-name">Teacher</span><br><span class="quote-role">Illustrative example</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="quotes-note">Illustrative examples of how ToDoFlow is meant to be used — not quotes from real people.</p>
+  </section>
+
+  <p class="hint"><kbd>Enter</kbd> add · <kbd>/</kbd> search · <kbd>Esc</kbd> cancel edit · drag to reorder</p>
+
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ---------- create-account modal (shown once, on first visit) ---------- -->
+<div class="modal-overlay" id="welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <h2 id="welcome-title">Create your ToDoFlow account</h2>
+    <p class="modal-sub">A quick local profile so your name, avatar, and level are saved right here on this device — no email or password needed.</p>
+
+    <div class="field-label">Your name</div>
+    <input class="input" type="text" id="welcome-name" placeholder="What should we call you?" maxlength="24" autocomplete="off">
+
+    <div class="field-label">Pick an avatar</div>
+    <div class="avatar-picker" id="welcome-avatar-picker"></div>
+    <input type="file" id="welcome-photo-input" accept="image/*" style="display:none;">
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="welcome-create-btn" style="width:100%;">Create account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- customize profile modal ---------- -->
+<div class="modal-overlay" id="profile-overlay" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+  <div class="modal-box">
+    <h2 id="profile-title">Customize profile</h2>
+    <p class="modal-sub">Update your name and pick a new avatar or upload a photo.</p>
+
+    <div class="modal-preview">
+      <span class="avatar-big" id="profile-preview-avatar">🙂</span>
+      <div style="flex:1;">
+        <div class="level-tag" id="profile-preview-level">Level 1</div>
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="profile-xp-fill" style="width:0%"></div></div>
+        <div class="xp-bar-caption" id="profile-xp-caption">0 / 100 XP to next level</div>
+      </div>
+    </div>
+
+    <div class="field-label">Display name</div>
+    <input class="input" type="text" id="profile-name-input" placeholder="Your name" maxlength="24" autocomplete="off">
+
+    <div class="field-label">Avatar</div>
+    <div class="avatar-picker" id="profile-avatar-picker"></div>
+    <input type="file" id="profile-photo-input" accept="image/*" style="display:none;">
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="profile-close-btn">Close</button>
+      <button type="button" class="btn btn-primary" id="profile-save-btn">Save changes</button>
+    </div>
+    <button type="button" class="logout-link" id="profile-logout-btn">Log out</button>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

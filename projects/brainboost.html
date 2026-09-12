@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BrainBoost — Smart Study Companion</title>
+<meta name="description" content="Assignment: 10 Markdown concepts styled as a premium gamified study companion. BrainBoost turns learning into a game." />
+<link rel="icon" type="image/svg+xml" href="brainboost-favicon.svg" />
+<meta name="theme-color" content="#2058D6" />
+<style>
+  :root{
+    --primary:#2058D6;
+    --primary-dark:#123f9e;
+    --primary-light:#5b8bf0;
+    --bg:#FFFDF8;
+    --panel:#ffffff;
+    --ink:#14213a;
+    --muted:#5c6478;
+    --gold:#FFB800;
+    --green:#2ecc71;
+    --line:#eae6da;
+    --radius:16px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--primary);}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 14px;border-radius:999px;
+    font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  }
+  .pill-blue{background:rgba(32,88,214,.1);color:var(--primary);}
+  .pill-gold{background:rgba(255,184,0,.15);color:#9a6b00;}
+  .pill-green{background:rgba(46,204,113,.15);color:#1c9a58;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;}
+
+  /* NAV */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,253,248,.9);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1080px;margin:0 auto;flex-wrap:wrap;gap:10px;}
+  .logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;}
+  .logo-badge{
+    width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;
+  }
+  .nav-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+
+  /* HERO */
+  .hero{padding:72px 0 40px;text-align:center;}
+  .hero .tag{margin-bottom:18px;}
+  .hero h1{
+    font-size:clamp(32px,6vw,56px);
+    font-weight:900;line-height:1.08;margin:0 0 18px;
+    letter-spacing:-.02em;
+  }
+  .hero h1 span{color:var(--primary);}
+  .hero p.quote{
+    font-size:18px;color:var(--muted);max-width:620px;margin:0 auto 30px;font-style:italic;
+  }
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    padding:13px 26px;border-radius:12px;font-weight:700;text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;font-size:15px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 8px 20px rgba(32,88,214,.3);}
+  .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line);}
+
+  /* PROFILE CARD */
+  .profile-section{padding:30px 0 10px;}
+  .profile-card{
+    background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+    border-radius:20px;color:#fff;padding:28px;
+    display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+    box-shadow:0 16px 40px rgba(32,88,214,.25);
+  }
+  .profile-left{display:flex;align-items:center;gap:16px;}
+  .avatar{
+    width:60px;height:60px;border-radius:14px;background:rgba(255,255,255,.15);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;
+    border:2px solid rgba(255,255,255,.35);
+  }
+  .profile-name{font-weight:800;font-size:18px;}
+  .profile-sub{font-size:13px;opacity:.8;}
+  .xp-bar-wrap{width:220px;}
+  .xp-label{font-size:11px;opacity:.85;margin-bottom:6px;display:flex;justify-content:space-between;}
+  .xp-track{height:8px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden;}
+  .xp-fill{height:100%;background:var(--gold);width:0%;border-radius:999px;transition:width .4s ease;}
+  .profile-stats{display:flex;gap:22px;flex-wrap:wrap;}
+  .pstat{text-align:center;}
+  .pstat b{display:block;font-size:20px;}
+  .pstat span{font-size:11px;opacity:.8;text-transform:uppercase;letter-spacing:.05em;}
+
+  /* TICKER */
+  .ticker-wrap{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:40px 0;background:#fff;}
+  .ticker{display:flex;gap:40px;white-space:nowrap;padding:14px 0;animation:scroll 22s linear infinite;width:max-content;}
+  .ticker span{font-weight:800;font-size:13px;letter-spacing:.08em;color:var(--primary);opacity:.75;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* COUNTERS */
+  .counters{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:20px 0 50px;}
+  .counter{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center;}
+  .counter b{display:block;font-size:26px;color:var(--primary);}
+  .counter span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+
+  /* SECTION HEAD */
+  .section{padding:50px 0;}
+  .section-head{text-align:center;margin-bottom:36px;}
+  .section-eyebrow{color:var(--primary);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+  .section-title{font-size:clamp(24px,4vw,34px);font-weight:900;margin:0 0 10px;}
+  .section-desc{color:var(--muted);max-width:520px;margin:0 auto;}
+
+  /* CONCEPT CARDS */
+  .concepts{display:flex;flex-direction:column;gap:20px;}
+  .concept-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px;display:grid;grid-template-columns:60px 1fr;gap:20px;
+  }
+  .concept-num{
+    width:44px;height:44px;border-radius:12px;background:rgba(32,88,214,.1);
+    color:var(--primary);font-weight:900;display:flex;align-items:center;justify-content:center;
+  }
+  .concept-body h3{margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;}
+  .concept-title{font-size:20px;font-weight:800;margin:0 0 14px;}
+  .code-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:720px){.code-grid{grid-template-columns:1fr;}.concept-card{grid-template-columns:1fr;}}
+  .code-box{background:#0f1a33;border-radius:10px;padding:14px 16px;overflow-x:auto;}
+  .code-box pre{margin:0;color:#d9e4ff;font-size:13px;font-family:"SF Mono",Consolas,Menlo,monospace;white-space:pre-wrap;}
+  .out-box{background:#f7f5ee;border:1px dashed var(--line);border-radius:10px;padding:14px 16px;font-size:14px;}
+  .out-box h1,.out-box h2,.out-box h3,.out-box h4{margin:6px 0;}
+  .box-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  table.demo{width:100%;border-collapse:collapse;font-size:14px;}
+  table.demo th,table.demo td{border:1px solid var(--line);padding:8px 10px;text-align:left;}
+  table.demo th{background:#f2f0e6;}
+  blockquote.demo{border-left:3px solid var(--primary);margin:0;padding:6px 0 6px 14px;color:var(--muted);}
+
+  /* TABLE SECTION */
+  .plans{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  @media (max-width:640px){.plans{grid-template-columns:1fr;}}
+  .plan-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;}
+  .plan-card.highlight{border-color:var(--primary);box-shadow:0 12px 30px rgba(32,88,214,.15);}
+  .plan-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .plan-head h4{margin:0;font-size:16px;}
+  .feature-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;}
+  .feature-row:last-child{border-bottom:none;}
+  .yes{color:var(--green);font-weight:800;}
+  .no{color:#c9c3b2;font-weight:800;}
+
+  /* PALETTE */
+  .palette{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+  .swatch{width:140px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff;}
+  .swatch-color{height:80px;}
+  .swatch-info{padding:10px;font-size:12px;}
+  .swatch-info b{display:block;font-size:13px;}
+
+  /* FOOTER */
+  footer{background:var(--ink);color:#c9d2ea;padding:50px 0 30px;margin-top:40px;}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:30px;margin-bottom:30px;}
+  @media (max-width:720px){.footer-grid{grid-template-columns:1fr;}}
+  footer h4{color:#fff;font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin:0 0 12px;}
+  footer ul{list-style:none;padding:0;margin:0;}
+  footer li{font-size:13px;margin-bottom:8px;color:#a9b3ce;}
+  footer a{color:#a9b3ce;text-decoration:none;}
+  footer a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:#7c86a3;}
+  .booyah-strip{
+    background:var(--gold);color:#3a2a00;text-align:center;font-weight:900;letter-spacing:.1em;
+    padding:14px 0;font-size:14px;
+  }
+
+  /* PLAY & LEARN */
+  .btn-sm{padding:9px 16px;font-size:13px;border:none;cursor:pointer;font-family:inherit;}
+  .play-tabs{display:flex;gap:10px;justify-content:center;margin-bottom:32px;flex-wrap:wrap;}
+  .play-tab-btn{
+    padding:10px 20px;border-radius:999px;border:1px solid var(--line);background:#fff;
+    font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;transition:.15s;color:var(--ink);
+  }
+  .play-tab-btn:hover{border-color:var(--primary);}
+  .play-tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .play-panel{display:none;}
+  .play-panel.active{display:block;}
+  .play-actions{text-align:center;margin-top:16px;}
+
+  /* Quiz */
+  .quiz-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:30px;max-width:600px;margin:0 auto;min-height:280px;}
+  .quiz-progress{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:700;}
+  .quiz-progress-track{height:6px;background:#f0ede0;border-radius:999px;overflow:hidden;margin-bottom:22px;}
+  .quiz-progress-fill{height:100%;background:var(--primary);border-radius:999px;transition:width .3s;}
+  .quiz-question{font-size:18px;font-weight:800;margin-bottom:20px;}
+  .quiz-options{display:flex;flex-direction:column;gap:10px;}
+  .quiz-option{padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;text-align:left;cursor:pointer;font-size:14px;font-weight:600;transition:.15s;font-family:inherit;}
+  .quiz-option:hover:not([disabled]){border-color:var(--primary);background:rgba(32,88,214,.05);}
+  .quiz-option.correct{background:rgba(46,204,113,.15);border-color:var(--green);color:#1c9a58;}
+  .quiz-option.wrong{background:rgba(231,76,60,.12);border-color:#e74c3c;color:#c0392b;}
+  .quiz-option[disabled]{cursor:default;}
+  .quiz-footer{display:flex;justify-content:space-between;align-items:center;margin-top:22px;}
+  .quiz-score{font-size:13px;color:var(--muted);font-weight:700;}
+  .quiz-result{text-align:center;padding:16px 0;}
+  .quiz-result .emoji{font-size:48px;margin-bottom:10px;}
+  .quiz-result h3{margin:0 0 6px;font-size:22px;}
+  .badge-pop{display:inline-block;background:var(--gold);color:#3a2a00;padding:8px 18px;border-radius:999px;font-weight:800;font-size:13px;margin-top:14px;}
+
+  /* Flashcards */
+  .flash-wrap{max-width:420px;margin:0 auto;text-align:center;}
+  .flash-card{perspective:1000px;height:220px;margin-bottom:18px;cursor:pointer;}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+  .flash-card.flipped .flash-inner{transform:rotateY(180deg);}
+  .flash-face{position:absolute;inset:0;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;backface-visibility:hidden;padding:20px;font-weight:800;font-size:22px;text-align:center;}
+  .flash-front{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-family:"SF Mono",Consolas,Menlo,monospace;}
+  .flash-back{background:#fff;border:2px solid var(--primary);color:var(--ink);transform:rotateY(180deg);font-size:16px;font-weight:700;}
+  .flash-progress{font-size:12px;color:var(--muted);margin-bottom:12px;font-weight:700;}
+  .flash-controls{display:flex;justify-content:center;gap:10px;}
+
+  /* Memory Match */
+  .memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:460px;margin:0 auto 20px;}
+  @media (max-width:480px){.memory-grid{grid-template-columns:repeat(3,1fr);}}
+  .memory-cell{
+    aspect-ratio:1;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:13px;color:transparent;cursor:pointer;user-select:none;transition:.2s;border:none;padding:4px;text-align:center;
+  }
+  .memory-cell.revealed{background:#fff;border:2px solid var(--primary);color:var(--ink);}
+  .memory-cell.matched{background:rgba(46,204,113,.15);border:2px solid var(--green);color:#1c9a58;cursor:default;}
+  .memory-meta{display:flex;justify-content:center;gap:24px;font-size:13px;color:var(--muted);margin-bottom:16px;font-weight:700;}
+  .memory-win{text-align:center;padding:14px;font-weight:800;color:var(--primary);}
+
+  /* LEADERBOARD */
+  .leaderboard-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px;max-width:700px;margin:0 auto;}
+  .lb-row{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:12px;flex-wrap:wrap;}
+  .lb-row + .lb-row{border-top:1px solid var(--line);}
+  .lb-row.me{background:rgba(32,88,214,.07);}
+  .lb-rank{width:26px;text-align:center;font-weight:900;font-size:14px;color:var(--muted);flex-shrink:0;}
+  .lb-rank.gold{color:#c9960c;}
+  .lb-rank.silver{color:#8b8f99;}
+  .lb-rank.bronze{color:#b0672c;}
+  .lb-avatar{
+    width:38px;height:38px;border-radius:10px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;
+  }
+  .lb-info{min-width:120px;flex:1;}
+  .lb-name{font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .lb-meta{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .lb-stats{display:flex;gap:18px;margin-left:auto;}
+  .lb-stat{text-align:center;}
+  .lb-stat b{display:block;font-size:15px;color:var(--primary);}
+  .lb-stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .lb-you-tag{background:var(--gold);color:#3a2a00;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;}
+  .lb-empty{text-align:center;padding:34px 20px;color:var(--muted);font-size:14px;}
+  .lb-live{
+    text-align:center;font-size:11px;font-weight:700;color:#1c9a58;
+    padding:8px 10px;letter-spacing:.03em;
+  }
+  .lb-live.lb-local{color:var(--muted);}
+
+  /* ACCOUNT MODAL — standard glassmorphism recipe on a flat brand-blue backdrop */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+    background:#2058D6;
+    padding:20px;
+  }
+  .modal-overlay.hidden{display:none;}
+  .modal-box{
+    position:relative;width:100%;max-width:420px;
+    background:rgba(255,255,255,.38);
+    backdrop-filter:blur(30px) saturate(120%);-webkit-backdrop-filter:blur(30px) saturate(120%);
+    border:1px solid rgba(255,255,255,.5);border-radius:20px;
+    padding:36px 30px;color:#fff;text-align:center;
+    box-shadow:0 8px 32px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.4);
+  }
+  /* Two soft drifting fog wisps — purely decorative, sit behind the content layer
+     so they never interrupt the text; they just sell the "this is glass" read. */
+  .modal-box::before,.modal-box::after{
+    content:'';position:absolute;border-radius:50%;pointer-events:none;z-index:0;
+    filter:blur(30px);
+  }
+  .modal-box::before{
+    width:200px;height:200px;top:-60px;left:-50px;
+    background:radial-gradient(circle,rgba(255,255,255,.65) 0%,rgba(255,255,255,0) 70%);
+    animation:fogDrift1 9s ease-in-out infinite;
+  }
+  .modal-box::after{
+    width:170px;height:170px;bottom:-60px;right:-45px;
+    background:radial-gradient(circle,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 70%);
+    animation:fogDrift2 11s ease-in-out infinite;
+  }
+  @keyframes fogDrift1{
+    0%,100%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(16px,12px) scale(1.08);}
+  }
+  @keyframes fogDrift2{
+    0%,100%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(-14px,-10px) scale(1.06);}
+  }
+  .modal-box > *{position:relative;z-index:1;}
+  .modal-heading{font-size:26px;font-weight:900;margin:0 0 8px;letter-spacing:-.01em;color:#fff;}
+  .modal-sub{font-size:13px;opacity:.85;margin:0 0 24px;line-height:1.5;color:#fff;}
+  .modal-input{
+    width:100%;padding:13px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.3);
+    background:rgba(255,255,255,.2);color:#fff;font-size:14px;margin-bottom:12px;font-family:inherit;
+  }
+  .modal-input::placeholder{color:rgba(255,255,255,.65);}
+  .modal-input:focus{outline:none;border-color:#fff;background:rgba(255,255,255,.3);}
+  .modal-btn{
+    width:100%;padding:13px;border-radius:10px;border:none;background:var(--primary);color:#fff;
+    font-weight:800;cursor:pointer;font-size:15px;font-family:inherit;margin-top:6px;
+    box-shadow:0 10px 24px rgba(32,88,214,.35);
+  }
+  .modal-btn:hover{background:var(--primary-dark);}
+  .modal-skip{
+    margin-top:14px;font-size:12px;opacity:.8;text-decoration:underline;cursor:pointer;
+    background:none;border:none;color:#fff;font-family:inherit;
+  }
+  .field-group{text-align:left;margin-bottom:14px;}
+  .field-label{
+    display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;
+    letter-spacing:.03em;margin-bottom:6px;color:#fff;opacity:.9;
+  }
+  .custom-dropdown{position:relative;}
+  .dropdown-toggle{
+    width:100%;padding:13px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.3);
+    background:rgba(255,255,255,.2);color:#fff;font-size:14px;font-family:inherit;
+    display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+  }
+  .dropdown-toggle:hover{border-color:#fff;}
+  .chevron{transition:transform .25s ease;display:inline-block;}
+  .chevron.open{transform:rotate(180deg);}
+  .dropdown-list{
+    position:absolute;top:calc(100% + 6px);left:0;right:0;
+    background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.6);border-radius:10px;overflow:hidden;box-shadow:0 12px 30px rgba(6,14,35,.25);
+    z-index:10;
+  }
+  .dropdown-list.hidden{display:none;}
+  .dropdown-item{padding:12px 14px;font-size:14px;color:var(--ink);cursor:pointer;text-align:left;font-weight:600;}
+  .dropdown-item:hover{background:rgba(32,88,214,.1);}
+  .dropdown-item + .dropdown-item{border-top:1px solid rgba(20,33,58,.08);}
+  .profile-meta{font-size:11px;opacity:.75;margin-top:2px;}
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:14px 20px;
+    border-radius:12px;font-weight:700;font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.25);
+    z-index:300;opacity:0;transform:translateY(16px);transition:.3s;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  .profile-actions{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<div class="modal-overlay hidden" id="accountModal">
+  <div class="modal-box">
+    <div class="modal-heading">Create Account</div>
+    <p class="modal-sub">Set up your BrainBoost profile. You'll start at Level 0 — play quizzes and games to earn XP, badges, and level up.</p>
+
+    <div class="field-group">
+      <label class="field-label" for="modalName">Name:</label>
+      <input type="text" id="modalName" class="modal-input" placeholder="Enter your name" maxlength="24" />
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="modalRoll">Roll Number:</label>
+      <input type="text" id="modalRoll" class="modal-input" placeholder="Enter your roll number" maxlength="12" />
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Slot:</label>
+      <div class="custom-dropdown" id="slotDropdown">
+        <button type="button" class="dropdown-toggle" id="slotToggle">
+          <span id="slotSelected">Select a day</span>
+          <span class="chevron" id="slotChevron">▾</span>
+        </button>
+        <div class="dropdown-list hidden" id="slotList">
+          <div class="dropdown-item" data-value="Monday">Monday</div>
+          <div class="dropdown-item" data-value="Tuesday">Tuesday</div>
+          <div class="dropdown-item" data-value="Wednesday">Wednesday</div>
+          <div class="dropdown-item" data-value="Thursday">Thursday</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="modal-btn" id="modalCreate">Create Account &amp; Start Learning</button>
+    <button class="modal-skip" id="modalSkip">Continue as Guest</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-badge">🧠</span> BrainBoost</div>
+    <div class="nav-right">
+      <span class="pill pill-green"><span class="dot"></span> Study Mode: On</span>
+      <span class="pill pill-blue">Assignment · Markdown Practice</span>
+    </div>
+  </div>
+</header>
+
+<section class="hero wrap">
+  <div class="tag"><span class="pill pill-gold">🎮 Learning, Gamified</span></div>
+  <h1>SMART STUDY <span>COMPANION</span><br/>FOR EVERY SUBJECT</h1>
+  <p class="quote">"Learning becomes easier when studying feels like playing."</p>
+  <div class="cta-row">
+    <a href="#play" class="btn btn-primary">Start Learning →</a>
+    <a href="#features" class="btn btn-ghost">View Features</a>
+  </div>
+</section>
+
+<section class="profile-section wrap">
+  <div class="profile-card" id="profile">
+    <div class="profile-left">
+      <div class="avatar" id="profileAvatar">?</div>
+      <div>
+        <div class="profile-name" id="profileName">Guest Student</div>
+        <div class="profile-sub" id="profileSub">Level 0 · New Learner</div>
+        <div class="profile-meta" id="profileMeta"></div>
+      </div>
+    </div>
+    <div class="xp-bar-wrap">
+      <div class="xp-label"><span>XP</span><span id="xpText">0 / 500</span></div>
+      <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%;"></div></div>
+    </div>
+    <div class="profile-stats">
+      <div class="pstat"><b id="statBadges">0</b><span>Badges</span></div>
+      <div class="pstat"><b id="statStreak">0</b><span>Day Streak</span></div>
+      <div class="pstat"><b id="statAvg">—</b><span>Avg Score</span></div>
+    </div>
+    <div class="profile-actions">
+      <button class="btn btn-ghost btn-sm" id="editProfileBtn">✏️ Edit Profile</button>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn">🚪 Log Out</button>
+    </div>
+  </div>
+</section>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>QUIZ</span><span>BADGES</span><span>DAILY CHALLENGE</span><span>XP POINTS</span><span>LEADERBOARD</span><span>PROGRESS TRACKING</span><span>AI QUIZ GENERATOR</span><span>STREAK</span>
+    <span>QUIZ</span><span>BADGES</span><span>DAILY CHALLENGE</span><span>XP POINTS</span><span>LEADERBOARD</span><span>PROGRESS TRACKING</span><span>AI QUIZ GENERATOR</span><span>STREAK</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="counters">
+    <div class="counter"><b>10</b><span>Concepts</span></div>
+    <div class="counter"><b>5+</b><span>Subjects</span></div>
+    <div class="counter"><b>0</b><span>Logins Required</span></div>
+    <div class="counter"><b>100%</b><span>Responsive</span></div>
+  </div>
+</div>
+
+<section class="section wrap" id="features">
+  <div class="section-head">
+    <div class="section-eyebrow">Loot · Study · Level Up</div>
+    <h2 class="section-title">10 Markdown Concepts</h2>
+    <p class="section-desc">Each concept is a study tool. Master them all to level up — content pulled straight from the BrainBoost project brief.</p>
+  </div>
+
+  <div class="concepts" id="concepts">
+
+    <!-- 01 Headings -->
+    <div class="concept-card">
+      <div class="concept-num">01</div>
+      <div class="concept-body">
+        <h3>Headings</h3>
+        <div class="concept-title"># ## ### — Project Goal</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre># BrainBoost – Smart Study Companion
+## Goal
+### Interactive Lessons
+#### Note: No login required</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <h1 style="font-size:20px;">BrainBoost – Smart Study Companion</h1>
+            <h2 style="font-size:17px;">Goal</h2>
+            <h3 style="font-size:15px;">Interactive Lessons</h3>
+            <h4 style="font-size:13px;">Note: No login required</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 Bold Italic Strike -->
+    <div class="concept-card">
+      <div class="concept-num">02</div>
+      <div class="concept-body">
+        <h3>Bold, Italic &amp; Strikethrough</h3>
+        <div class="concept-title">**b** *i* ~~s~~ — Why It Matters</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>BrainBoost is **not** a ~~boring textbook~~.
+It's an *interactive* way to study, packed
+with ***quizzes, badges, and daily challenges***.</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <p>BrainBoost is <b>not</b> a <s>boring textbook</s>. It's an <i>interactive</i> way to study, packed with <b><i>quizzes, badges, and daily challenges</i></b>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 Bullet list -->
+    <div class="concept-card">
+      <div class="concept-num">03</div>
+      <div class="concept-body">
+        <h3>Bullet List</h3>
+        <div class="concept-title">- item — Core Features</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>- Interactive lessons for every subject
+- AI-powered quiz generator
+- Reward badges and achievements
+- Student progress tracking
+- Fully responsive design</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <ul style="margin:0;padding-left:18px;">
+              <li>Interactive lessons for every subject</li>
+              <li>AI-powered quiz generator</li>
+              <li>Reward badges and achievements</li>
+              <li>Student progress tracking</li>
+              <li>Fully responsive design</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 Ordered list -->
+    <div class="concept-card">
+      <div class="concept-num">04</div>
+      <div class="concept-body">
+        <h3>Ordered List</h3>
+        <div class="concept-title">1. 2. 3. — User Journey</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>1. Open the website
+2. Read about BrainBoost's features
+3. Choose a subject to study
+4. Complete a quiz or daily challenge
+5. View your score and earn badges</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <ol style="margin:0;padding-left:18px;">
+              <li>Open the website</li>
+              <li>Read about BrainBoost's features</li>
+              <li>Choose a subject to study</li>
+              <li>Complete a quiz or daily challenge</li>
+              <li>View your score and earn badges</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 Links -->
+    <div class="concept-card">
+      <div class="concept-num">05</div>
+      <div class="concept-body">
+        <h3>Links</h3>
+        <div class="concept-title">[text](url) — Useful Links</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>[Markdown Guide](https://www.markdownguide.org/)
+[GitHub](https://github.com/)
+[Netlify](https://www.netlify.com/)</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <p>
+              <a href="https://www.markdownguide.org/" target="_blank" rel="noopener">Markdown Guide →</a><br/>
+              <a href="https://github.com/" target="_blank" rel="noopener">GitHub →</a><br/>
+              <a href="https://www.netlify.com/" target="_blank" rel="noopener">Netlify →</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 Images -->
+    <div class="concept-card">
+      <div class="concept-num">06</div>
+      <div class="concept-body">
+        <h3>Images (Alt)</h3>
+        <div class="concept-title">![alt](url) — Sample Image</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>![Students studying together with BrainBoost](sample.jpg)</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <div style="height:90px;border-radius:8px;background:linear-gradient(135deg,#2058D6,#5b8bf0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;text-align:center;padding:8px;">
+              Students studying together<br/>with BrainBoost
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 Table -->
+    <div class="concept-card">
+      <div class="concept-num">07</div>
+      <div class="concept-body">
+        <h3>Tables</h3>
+        <div class="concept-title">| col | col | — Tech Stack</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>| Technology | Details            |
+|------------|---------------------|
+| Frontend   | HTML, CSS, JS       |
+| Backend    | None                |
+| Hosting    | Netlify             |</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <table class="demo">
+              <tr><th>Technology</th><th>Details</th></tr>
+              <tr><td>Frontend</td><td>HTML, CSS, JS</td></tr>
+              <tr><td>Backend</td><td>None</td></tr>
+              <tr><td>Hosting</td><td>Netlify</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 Inline code -->
+    <div class="concept-card">
+      <div class="concept-num">08</div>
+      <div class="concept-body">
+        <h3>Inline Code</h3>
+        <div class="concept-title">`code` — Run Locally</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>Run the project using `Live Server` in Visual Studio Code.</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <p>Run the project using <code style="background:#f0ede0;padding:2px 6px;border-radius:4px;">Live Server</code> in Visual Studio Code.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 Code block -->
+    <div class="concept-card">
+      <div class="concept-num">09</div>
+      <div class="concept-body">
+        <h3>Code Block</h3>
+        <div class="concept-title">```html``` — Start Learning Button</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>```html
+&lt;button class="start-learning"&gt;
+  Start Learning
+&lt;/button&gt;
+```</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <button style="background:var(--primary);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;">Start Learning</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 Blockquote -->
+    <div class="concept-card">
+      <div class="concept-num">10</div>
+      <div class="concept-body">
+        <h3>Blockquote &amp; Horizontal Line</h3>
+        <div class="concept-title">&gt; text · --- — Why BrainBoost</div>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="box-label" style="color:#8ea6e0;">Input · Markdown</div>
+            <pre>> Students learn better when they enjoy
+> the learning process.
+
+---
+
+> This is a blockquote used for
+> Markdown practice.</pre>
+          </div>
+          <div class="out-box">
+            <div class="box-label">Output · Rendered</div>
+            <blockquote class="demo">Students learn better when they enjoy the learning process.</blockquote>
+            <hr style="border:none;border-top:1px solid var(--line);margin:10px 0;"/>
+            <blockquote class="demo">This is a blockquote used for Markdown practice.</blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section wrap" id="play">
+  <div class="section-head">
+    <div class="section-eyebrow">Play · Practice · Progress</div>
+    <h2 class="section-title">Learn By Playing</h2>
+    <p class="section-desc">Short quizzes, flip-card drills, and a memory match game — the interactive core that makes any subject easier to learn and stick with.</p>
+  </div>
+
+  <div class="play-tabs">
+    <button class="play-tab-btn active" data-tab="quiz">🧠 Quiz Arena</button>
+    <button class="play-tab-btn" data-tab="flash">🔄 Flashcards</button>
+    <button class="play-tab-btn" data-tab="memory">🧩 Memory Match</button>
+  </div>
+
+  <!-- QUIZ ARENA -->
+  <div class="play-panel active" id="panel-quiz">
+    <div class="quiz-card" id="quizCard"></div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div class="play-panel" id="panel-flash">
+    <div class="flash-wrap">
+      <div class="flash-progress" id="flashProgress">Card 1 / 6</div>
+      <div class="flash-card" id="flashCard">
+        <div class="flash-inner">
+          <div class="flash-face flash-front" id="flashFront"></div>
+          <div class="flash-face flash-back" id="flashBack"></div>
+        </div>
+      </div>
+      <div class="flash-controls">
+        <button class="btn btn-ghost btn-sm" id="flashPrev">← Prev</button>
+        <button class="btn btn-primary btn-sm" id="flashFlip">Flip Card</button>
+        <button class="btn btn-ghost btn-sm" id="flashNext">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMORY MATCH -->
+  <div class="play-panel" id="panel-memory">
+    <div class="memory-meta">
+      <span>Moves: <b id="memMoves">0</b></span>
+      <span>Matches: <b id="memMatches">0</b>/6</span>
+    </div>
+    <div class="memory-grid" id="memoryGrid"></div>
+    <div class="play-actions"><button class="btn btn-ghost btn-sm" id="memReset">🔄 Restart Game</button></div>
+  </div>
+</section>
+
+<section class="section wrap" id="leaderboard">
+  <div class="section-head">
+    <div class="section-eyebrow">Compete · Climb · Conquer</div>
+    <h2 class="section-title">Leaderboard</h2>
+    <p class="section-desc">Every learner who has created a profile on this device, ranked by level, XP, and badges. Play more to climb the ranks.</p>
+  </div>
+  <div class="leaderboard-card" id="leaderboardCard"></div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <div class="section-eyebrow">Free vs Premium</div>
+    <h2 class="section-title">Markdown Table Demo</h2>
+    <p class="section-desc">A practical table straight from the BrainBoost feature comparison.</p>
+  </div>
+  <div class="plans">
+    <div class="plan-card">
+      <div class="plan-head"><h4>Free Version</h4><span class="pill pill-blue">Default</span></div>
+      <div class="feature-row"><span>Daily Quizzes</span><span class="yes">✓</span></div>
+      <div class="feature-row"><span>AI Quiz Generator</span><span class="no">✗</span></div>
+      <div class="feature-row"><span>Progress Tracking</span><span class="yes">✓</span></div>
+      <div class="feature-row"><span>Unlimited Practice</span><span class="no">✗</span></div>
+    </div>
+    <div class="plan-card highlight">
+      <div class="plan-head"><h4>Premium Version</h4><span class="pill pill-gold">Recommended</span></div>
+      <div class="feature-row"><span>Daily Quizzes</span><span class="yes">✓</span></div>
+      <div class="feature-row"><span>AI Quiz Generator</span><span class="yes">✓</span></div>
+      <div class="feature-row"><span>Progress Tracking</span><span class="yes">✓</span></div>
+      <div class="feature-row"><span>Unlimited Practice</span><span class="yes">✓</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <div class="section-eyebrow">Design System</div>
+    <h2 class="section-title">Look &amp; Feel</h2>
+    <p class="section-desc">Clean, friendly, responsive, and modern — the BrainBoost visual identity.</p>
+  </div>
+  <div class="palette">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2058D6;"></div>
+      <div class="swatch-info"><b>Primary</b>#2058D6</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FFFDF8;border-bottom:1px solid #eee;"></div>
+      <div class="swatch-info"><b>Background</b>#FFFDF8</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FFB800;"></div>
+      <div class="swatch-info"><b>Reward Gold</b>#FFB800</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#14213a;"></div>
+      <div class="swatch-info"><b>Ink</b>#14213A</div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <div class="section-eyebrow">Why BrainBoost?</div>
+    <h2 class="section-title">Studying Should Feel Like Playing</h2>
+    <p class="section-desc" style="max-width:640px;">I believe students learn better when they enjoy the learning process. BrainBoost combines education with games, quizzes, and rewards to make studying less stressful, more enjoyable, and more motivating — no logins, no payments, no complicated backend, just one clean <code>index.html</code>.</p>
+  </div>
+</section>
+
+<div class="booyah-strip">LEVEL UP YOUR LEARNING 🎓</div>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h4>BrainBoost</h4>
+        <p style="font-size:13px;color:#a9b3ce;max-width:320px;">A fun, gamified study companion built with plain HTML, CSS, and JavaScript. No login, no payment, no complicated backend.</p>
+      </div>
+      <div>
+        <h4>Non-Goals</h4>
+        <ul>
+          <li>No login system</li>
+          <li>No payment system</li>
+          <li>No complicated backend</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Constraints</h4>
+        <ul>
+          <li>Works on mobile &amp; desktop</li>
+          <li>Accessible text sizes</li>
+          <li>No exposed secrets</li>
+          <li>Single index.html file</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Assignment — Markdown Practice, themed as a gamified study companion.</span>
+      <span>BrainBoost · © 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+
+  /* ---------- STUDENT PROFILE ---------- */
+  var STORAGE_KEY = 'brainboost_profile';
+  var memProfile = null; // fallback if localStorage is unavailable
+  var profile = null;
+
+  function defaultProfile(name, rollNumber, slot){
+    return { name:name||'Guest', rollNumber:rollNumber||'', slot:slot||'', level:0, xp:0, xpPerLevel:500, badges:0, streak:0, quizzesTaken:0, scoreSum:0 };
+  }
+
+  function loadProfile(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return memProfile;
+  }
+
+  function saveProfile(){
+    memProfile = profile;
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }catch(e){}
+    syncPlayerRecord();
+  }
+
+  /* ---------- LEADERBOARD (all players who've signed up on this device) ---------- */
+  var PLAYERS_KEY = 'brainboost_players';
+  var memPlayers = null;
+
+  function loadPlayers(){
+    try{
+      var raw = localStorage.getItem(PLAYERS_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return memPlayers || [];
+  }
+
+  function savePlayers(players){
+    memPlayers = players;
+    try{ localStorage.setItem(PLAYERS_KEY, JSON.stringify(players)); }catch(e){}
+  }
+
+  function playerKey(name, rollNumber){
+    return (name || '').trim().toLowerCase() + '|' + (rollNumber || '').trim().toLowerCase();
+  }
+
+  function syncPlayerRecord(){
+    if(!profile) return;
+    var players = loadPlayers();
+    var key = playerKey(profile.name, profile.rollNumber);
+    var record = {
+      key: key,
+      name: profile.name,
+      rollNumber: profile.rollNumber,
+      slot: profile.slot,
+      level: profile.level,
+      xp: profile.xp,
+      badges: profile.badges,
+      quizzesTaken: profile.quizzesTaken,
+      scoreSum: profile.scoreSum,
+      updatedAt: Date.now()
+    };
+    var found = false;
+    for(var i = 0; i < players.length; i++){
+      if(players[i].key === key){ players[i] = record; found = true; break; }
+    }
+    if(!found) players.push(record);
+    savePlayers(players);
+  }
+
+  var cloudLeaderboardActive = false;
+
+  function renderLeaderboard(){
+    renderLeaderboardList(loadPlayers());
+  }
+
+  function renderLeaderboardList(players){
+    var card = document.getElementById('leaderboardCard');
+    players = (players || []).slice();
+    var statusTag = cloudLeaderboardActive
+      ? '<div class="lb-live">🟢 Live — synced across every device</div>'
+      : '<div class="lb-live lb-local">📍 Showing players on this device only</div>';
+    if(players.length === 0){
+      card.innerHTML = statusTag + '<div class="lb-empty">🏆 No players yet — create your account to be the first on the board!</div>';
+      return;
+    }
+    players.sort(function(a, b){
+      if(b.level !== a.level) return b.level - a.level;
+      if(b.badges !== a.badges) return b.badges - a.badges;
+      return b.xp - a.xp;
+    });
+    var myKey = profile ? playerKey(profile.name, profile.rollNumber) : null;
+    var rankClasses = ['gold', 'silver', 'bronze'];
+    var html = '';
+    players.forEach(function(p, idx){
+      var isMe = p.key === myKey;
+      var avg = p.quizzesTaken > 0 ? Math.round(p.scoreSum / p.quizzesTaken) + '%' : '—';
+      var rankClass = rankClasses[idx] || '';
+      html += '<div class="lb-row' + (isMe ? ' me' : '') + '">';
+      html += '  <div class="lb-rank ' + rankClass + '">' + (idx+1) + '</div>';
+      html += '  <div class="lb-avatar">' + initials(p.name) + '</div>';
+      html += '  <div class="lb-info">';
+      html += '    <div class="lb-name">' + escapeHtml(p.name) + (isMe ? ' <span class="lb-you-tag">YOU</span>' : '') + '</div>';
+      html += '    <div class="lb-meta">Roll No ' + escapeHtml(p.rollNumber || '—') + ' · ' + escapeHtml(p.slot || 'No Slot') + ' Slot</div>';
+      html += '  </div>';
+      html += '  <div class="lb-stats">';
+      html += '    <div class="lb-stat"><b>' + p.level + '</b><span>Level</span></div>';
+      html += '    <div class="lb-stat"><b>' + p.badges + '</b><span>Badges</span></div>';
+      html += '    <div class="lb-stat"><b>' + avg + '</b><span>Avg</span></div>';
+      html += '  </div>';
+      html += '</div>';
+    });
+    card.innerHTML = statusTag + html;
+  }
+
+  function escapeHtml(str){
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function initials(name){
+    if(!name) return '?';
+    var parts = name.trim().split(/\s+/);
+    var a = parts[0] ? parts[0][0] : '';
+    var b = parts[1] ? parts[1][0] : '';
+    return (a+b).toUpperCase() || '?';
+  }
+
+  function levelTitle(level){
+    if(level <= 0) return 'New Learner';
+    if(level <= 2) return 'Rising Star';
+    if(level <= 5) return 'Consistent Learner';
+    if(level <= 9) return 'Achiever';
+    return 'Markdown Master';
+  }
+
+  function renderProfile(){
+    var p = profile || defaultProfile('Guest Student');
+    document.getElementById('profileAvatar').textContent = profile ? initials(p.name) : '?';
+    document.getElementById('profileName').textContent = p.name;
+    document.getElementById('profileSub').textContent = 'Level ' + p.level + ' · ' + levelTitle(p.level);
+    document.getElementById('xpText').textContent = p.xp + ' / ' + p.xpPerLevel;
+    document.getElementById('xpFill').style.width = Math.min(100, Math.round((p.xp/p.xpPerLevel)*100)) + '%';
+    document.getElementById('statBadges').textContent = p.badges;
+    document.getElementById('statStreak').textContent = p.streak;
+    document.getElementById('statAvg').textContent = p.quizzesTaken > 0 ? Math.round(p.scoreSum/p.quizzesTaken) + '%' : '—';
+    var metaEl = document.getElementById('profileMeta');
+    if(profile && (profile.rollNumber || profile.slot)){
+      metaEl.textContent = 'Roll No ' + (profile.rollNumber || '—') + ' · ' + (profile.slot || 'No Slot') + ' Slot';
+    } else {
+      metaEl.textContent = '';
+    }
+  }
+
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._hideTimer);
+    t._hideTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+
+  function addXP(amount){
+    if(!profile) return;
+    profile.xp += amount;
+    var leveledUp = false;
+    while(profile.xp >= profile.xpPerLevel){
+      profile.xp -= profile.xpPerLevel;
+      profile.level++;
+      profile.badges++;
+      leveledUp = true;
+    }
+    saveProfile();
+    renderProfile();
+    if(leveledUp){
+      showToast('🎉 Level Up! Now Level ' + profile.level);
+    } else {
+      showToast('+' + amount + ' XP earned');
+    }
+  }
+
+  function recordQuizResult(scoreCount, totalCount){
+    if(!profile) return;
+    var pct = Math.round((scoreCount/totalCount)*100);
+    profile.quizzesTaken++;
+    profile.scoreSum += pct;
+    saveProfile();
+    addXP(scoreCount * 20);
+  }
+
+  /* ---------- ACCOUNT MODAL ---------- */
+  var modalOverlay = document.getElementById('accountModal');
+  var modalName = document.getElementById('modalName');
+  var modalRoll = document.getElementById('modalRoll');
+  var slotToggle = document.getElementById('slotToggle');
+  var slotList = document.getElementById('slotList');
+  var slotChevron = document.getElementById('slotChevron');
+  var slotSelected = document.getElementById('slotSelected');
+  var selectedSlot = '';
+
+  function closeSlotList(){
+    slotList.classList.add('hidden');
+    slotChevron.classList.remove('open');
+  }
+  slotToggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    var willOpen = slotList.classList.contains('hidden');
+    if(willOpen){
+      slotList.classList.remove('hidden');
+      slotChevron.classList.add('open');
+    } else {
+      closeSlotList();
+    }
+  });
+  slotList.querySelectorAll('.dropdown-item').forEach(function(item){
+    item.addEventListener('click', function(e){
+      e.stopPropagation();
+      selectedSlot = item.dataset.value;
+      slotSelected.textContent = selectedSlot;
+      closeSlotList();
+    });
+  });
+  document.addEventListener('click', function(){ closeSlotList(); });
+
+  function openModal(prefill){
+    if(prefill && profile){
+      modalName.value = profile.name === 'Guest' ? '' : profile.name;
+      modalRoll.value = profile.rollNumber || '';
+      selectedSlot = profile.slot || '';
+      slotSelected.textContent = selectedSlot || 'Select a day';
+    } else {
+      modalName.value = '';
+      modalRoll.value = '';
+      selectedSlot = '';
+      slotSelected.textContent = 'Select a day';
+    }
+    closeSlotList();
+    modalOverlay.classList.remove('hidden');
+  }
+  function closeModal(){
+    modalOverlay.classList.add('hidden');
+  }
+
+  document.getElementById('modalCreate').addEventListener('click', function(){
+    var name = modalName.value.trim() || 'Student';
+    var roll = modalRoll.value.trim();
+    var slot = selectedSlot;
+    if(profile){
+      profile.name = name;
+      profile.rollNumber = roll;
+      profile.slot = slot;
+    } else {
+      profile = defaultProfile(name, roll, slot);
+    }
+    saveProfile();
+    renderProfile();
+    closeModal();
+    showToast('👋 Welcome, ' + name + '! Start playing to earn XP.');
+  });
+
+  document.getElementById('modalSkip').addEventListener('click', function(){
+    if(!profile){
+      profile = defaultProfile('Guest', '', '');
+      saveProfile();
+    }
+    renderProfile();
+    closeModal();
+  });
+
+  document.getElementById('editProfileBtn').addEventListener('click', function(){
+    openModal(true);
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', function(){
+    if(!profile){ openModal(false); return; }
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    memProfile = null;
+    profile = null;
+    renderProfile();
+    showToast('👋 Logged out. See you next time!');
+    openModal(false);
+  });
+
+  profile = loadProfile();
+  renderProfile();
+  renderLeaderboard();
+  if(profile){
+    closeModal();
+  } else {
+    openModal(false);
+  }
+
+  /* ---------- TAB SWITCHING ---------- */
+  var tabBtns = document.querySelectorAll('.play-tab-btn');
+  var panels = { quiz:'panel-quiz', flash:'panel-flash', memory:'panel-memory' };
+  tabBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      tabBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      Object.values(panels).forEach(function(id){
+        document.getElementById(id).classList.remove('active');
+      });
+      document.getElementById(panels[btn.dataset.tab]).classList.add('active');
+    });
+  });
+
+  /* ---------- QUIZ ARENA ---------- */
+  var quizData = [
+    { q:"What symbol creates a heading in Markdown?", opts:["#","*","-",">"], a:0 },
+    { q:"Which syntax makes text bold?", opts:["*text*","**text**","~~text~~","`text`"], a:1 },
+    { q:"What does ~~text~~ do?", opts:["Bold","Italic","Strikethrough","Code"], a:2 },
+    { q:"How do you create a link in Markdown?", opts:["(text)[url]","<url>text</url>","[text](url)","{text|url}"], a:2 },
+    { q:"What symbol starts a blockquote?", opts:[">","<","|","#"], a:0 }
+  ];
+  var quizIndex = 0, quizScore = 0;
+  var quizCard = document.getElementById('quizCard');
+
+  function renderQuiz(){
+    if(quizIndex >= quizData.length){
+      var pct = Math.round((quizScore/quizData.length)*100);
+      recordQuizResult(quizScore, quizData.length);
+      var badge = pct >= 80 ? '<div class="badge-pop">🏅 Badge Unlocked: Markdown Master</div>' : '<div class="badge-pop">⭐ +'+(quizScore*20)+' XP earned</div>';
+      quizCard.innerHTML =
+        '<div class="quiz-result">' +
+          '<div class="emoji">' + (pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪') + '</div>' +
+          '<h3>You scored ' + quizScore + ' / ' + quizData.length + '</h3>' +
+          '<p style="color:var(--muted);">' + (pct >= 80 ? 'Booyah! Perfect run.' : pct >= 50 ? 'Nice work — keep practicing!' : 'Every attempt makes you sharper.') + '</p>' +
+          badge +
+          '<div style="margin-top:20px;"><button class="btn btn-primary btn-sm" id="quizRestart">🔁 Play Again</button></div>' +
+        '</div>';
+      document.getElementById('quizRestart').addEventListener('click', function(){
+        quizIndex = 0; quizScore = 0; renderQuiz();
+      });
+      return;
+    }
+    var item = quizData[quizIndex];
+    var pctDone = Math.round((quizIndex/quizData.length)*100);
+    var html = '';
+    html += '<div class="quiz-progress"><span>Question ' + (quizIndex+1) + ' of ' + quizData.length + '</span><span>' + pctDone + '%</span></div>';
+    html += '<div class="quiz-progress-track"><div class="quiz-progress-fill" style="width:' + pctDone + '%;"></div></div>';
+    html += '<div class="quiz-question">' + item.q + '</div>';
+    html += '<div class="quiz-options">';
+    item.opts.forEach(function(opt, i){
+      html += '<button class="quiz-option" data-i="' + i + '">' + opt + '</button>';
+    });
+    html += '</div>';
+    html += '<div class="quiz-footer"><span class="quiz-score">Score: ' + quizScore + ' / ' + quizData.length + '</span></div>';
+    quizCard.innerHTML = html;
+
+    var opts = quizCard.querySelectorAll('.quiz-option');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        opts.forEach(function(o){ o.disabled = true; });
+        var chosen = parseInt(opt.dataset.i, 10);
+        if(chosen === item.a){
+          opt.classList.add('correct');
+          quizScore++;
+        } else {
+          opt.classList.add('wrong');
+          opts[item.a].classList.add('correct');
+        }
+        setTimeout(function(){
+          quizIndex++;
+          renderQuiz();
+        }, 900);
+      });
+    });
+  }
+  renderQuiz();
+
+  /* ---------- FLASHCARDS ---------- */
+  var flashData = [
+    { f:"# ", b:"Heading level 1" },
+    { f:"**bold**", b:"Bold text" },
+    { f:"`code`", b:"Inline code" },
+    { f:"- item", b:"Bullet list" },
+    { f:"[text](url)", b:"Hyperlink" },
+    { f:"> quote", b:"Blockquote" }
+  ];
+  var flashIndex = 0;
+  var flashSeen = {};
+  var flashCardEl = document.getElementById('flashCard');
+  var flashFront = document.getElementById('flashFront');
+  var flashBack = document.getElementById('flashBack');
+  var flashProgress = document.getElementById('flashProgress');
+
+  function renderFlash(){
+    flashCardEl.classList.remove('flipped');
+    flashFront.textContent = flashData[flashIndex].f;
+    flashBack.textContent = flashData[flashIndex].b;
+    flashProgress.textContent = 'Card ' + (flashIndex+1) + ' / ' + flashData.length;
+  }
+  function toggleFlashFlip(){
+    var nowFlipped = flashCardEl.classList.toggle('flipped');
+    if(nowFlipped && !flashSeen[flashIndex]){
+      flashSeen[flashIndex] = true;
+      addXP(5);
+    }
+  }
+  flashCardEl.addEventListener('click', toggleFlashFlip);
+  document.getElementById('flashFlip').addEventListener('click', toggleFlashFlip);
+  document.getElementById('flashNext').addEventListener('click', function(){
+    flashIndex = (flashIndex + 1) % flashData.length; renderFlash();
+  });
+  document.getElementById('flashPrev').addEventListener('click', function(){
+    flashIndex = (flashIndex - 1 + flashData.length) % flashData.length; renderFlash();
+  });
+  renderFlash();
+
+  /* ---------- MEMORY MATCH ---------- */
+  var memoryPairs = [
+    { key:'h', label:'#', match:'Heading' },
+    { key:'b', label:'**', match:'Bold' },
+    { key:'i', label:'*', match:'Italic' },
+    { key:'s', label:'~~', match:'Strike' },
+    { key:'l', label:'-', match:'List' },
+    { key:'c', label:'`', match:'Code' }
+  ];
+  var memGrid = document.getElementById('memoryGrid');
+  var memMovesEl = document.getElementById('memMoves');
+  var memMatchesEl = document.getElementById('memMatches');
+  var memCards = [], memFlipped = [], memMoves = 0, memMatches = 0, memLock = false;
+
+  function shuffle(arr){
+    for(var i = arr.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  function buildMemory(){
+    var deck = [];
+    memoryPairs.forEach(function(p){
+      deck.push({ key:p.key, text:p.label });
+      deck.push({ key:p.key, text:p.match });
+    });
+    deck = shuffle(deck);
+    memCards = deck; memFlipped = []; memMoves = 0; memMatches = 0; memLock = false;
+    memMovesEl.textContent = 0; memMatchesEl.textContent = 0;
+    memGrid.innerHTML = '';
+    deck.forEach(function(card, idx){
+      var cell = document.createElement('button');
+      cell.className = 'memory-cell';
+      cell.dataset.idx = idx;
+      cell.textContent = '?';
+      cell.addEventListener('click', function(){ flipMemCard(idx, cell); });
+      memGrid.appendChild(cell);
+    });
+  }
+
+  function flipMemCard(idx, cell){
+    if(memLock || cell.classList.contains('revealed') || cell.classList.contains('matched')) return;
+    cell.classList.add('revealed');
+    cell.textContent = memCards[idx].text;
+    memFlipped.push({ idx:idx, cell:cell });
+
+    if(memFlipped.length === 2){
+      memLock = true;
+      memMoves++; memMovesEl.textContent = memMoves;
+      var a = memFlipped[0], b = memFlipped[1];
+      if(memCards[a.idx].key === memCards[b.idx].key){
+        a.cell.classList.add('matched');
+        b.cell.classList.add('matched');
+        memMatches++; memMatchesEl.textContent = memMatches;
+        memFlipped = []; memLock = false;
+        if(memMatches === memoryPairs.length){
+          setTimeout(function(){
+            var win = document.createElement('div');
+            win.className = 'memory-win';
+            win.textContent = '🎉 Booyah! Matched in ' + memMoves + ' moves.';
+            memGrid.parentNode.insertBefore(win, memGrid.nextSibling);
+            addXP(memMoves <= 8 ? 70 : 50);
+          }, 300);
+        }
+      } else {
+        setTimeout(function(){
+          a.cell.classList.remove('revealed'); a.cell.textContent = '?';
+          b.cell.classList.remove('revealed'); b.cell.textContent = '?';
+          memFlipped = []; memLock = false;
+        }, 800);
+      }
+    }
+  }
+
+  document.getElementById('memReset').addEventListener('click', function(){
+    var oldWin = memGrid.parentNode.querySelector('.memory-win');
+    if(oldWin) oldWin.remove();
+    buildMemory();
+  });
+  buildMemory();
+
+})();
+</script>
+
+</body>
+</html>

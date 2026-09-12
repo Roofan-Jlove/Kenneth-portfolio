@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focus — Pomodoro Timer</title>
+<style>
+  :root {
+    --bg: #0b1120;
+    --bg-soft: #111a2e;
+    --surface: #141e33;
+    --surface-2: #1a2540;
+    --border: #253866;
+    --border-subtle: #22304d;
+    --text: #e7ecf7;
+    --text-muted: #8b98b8;
+    --accent: #5b8cff;
+    --accent-soft: #2a3d6b;
+    --accent-strong: #7ba1ff;
+    --success: #34d399;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition-duration: 0.001s !important; }
+  }
+
+  @keyframes gradientDrift {
+    0%   { background-position: 0% 0%, 100% 0%, 0 0; }
+    50%  { background-position: 8% 6%, 92% 4%, 0 0; }
+    100% { background-position: 0% 0%, 100% 0%, 0 0; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes popIn {
+    0%   { opacity: 0; transform: scale(0.85); }
+    70%  { opacity: 1; transform: scale(1.06); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(52,211,153,0.55); }
+    50%      { transform: scale(1.15); box-shadow: 0 0 0 5px rgba(52,211,153,0); }
+  }
+
+  @keyframes breatheGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(91,140,255,0.28); }
+    50%      { box-shadow: 0 0 0 14px rgba(91,140,255,0); }
+  }
+
+  @keyframes tickPulse {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.035); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes dashPop {
+    0%   { transform: scaleY(1); }
+    50%  { transform: scaleY(1.8); }
+    100% { transform: scaleY(1); }
+  }
+
+  @keyframes spinSlow {
+    from { transform: rotate(-90deg); }
+    to   { transform: rotate(270deg); }
+  }
+
+  /* ---------- Scroll reveal ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.reveal-left { transform: translateX(-32px); }
+  .reveal.reveal-right { transform: translateX(32px); }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', Roboto, -apple-system, sans-serif;
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(91,140,255,0.14), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(52,211,153,0.08), transparent 55%),
+      var(--bg);
+    background-size: 140% 140%, 140% 140%, 100% 100%;
+    animation: gradientDrift 18s ease-in-out infinite;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.6s ease;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Nav ---------- */
+  header.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 48px;
+    border-bottom: 1px solid var(--border-subtle);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.2px;
+  }
+
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--success));
+    background-size: 200% 200%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #0b1120;
+    animation: gradientDrift 6s ease-in-out infinite;
+    transition: transform 0.2s ease;
+  }
+  .brand:hover .brand-mark { transform: rotate(-8deg) scale(1.08); }
+
+  nav.links {
+    display: flex;
+    gap: 32px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  nav.links a {
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  nav.links a:hover { color: var(--text); }
+
+  .nav-cta {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* ---------- Hero / layout ---------- */
+  main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 24px 100px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+
+  .eyebrow .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: pulseDot 1.8s ease-in-out infinite;
+  }
+
+  .eyebrow {
+    animation: fadeUp 0.6s ease both;
+    animation-delay: 0.08s;
+  }
+
+  h1.title {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin: 0 0 12px;
+    max-width: 560px;
+    animation: fadeUp 0.6s ease both;
+    animation-delay: 0.16s;
+  }
+
+  p.subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 480px;
+    line-height: 1.6;
+    margin: 0 0 44px;
+    animation: fadeUp 0.6s ease both;
+    animation-delay: 0.24s;
+  }
+
+  /* ---------- Timer panel ---------- */
+  .panel {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.6);
+    transition: box-shadow 0.4s ease;
+  }
+  .panel:hover {
+    box-shadow: 0 34px 90px -28px rgba(0,0,0,0.68);
+  }
+
+  .panel-main {
+    padding: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .mode-tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--bg-soft);
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 36px;
+  }
+
+  .mode-tab {
+    padding: 8px 16px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: default;
+    transition: all 0.25s ease;
+  }
+
+  .mode-tab.active {
+    background: var(--surface-2);
+    color: var(--text);
+    box-shadow: 0 0 0 1px var(--border-subtle);
+    animation: popIn 0.35s ease both;
+  }
+
+  .ring-wrap {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    margin-bottom: 32px;
+    border-radius: 50%;
+  }
+
+  .ring-wrap.running {
+    animation: breatheGlow 2.6s ease-in-out infinite;
+  }
+
+  svg {
+    transform: rotate(-90deg);
+    transition: transform 0.3s ease;
+  }
+
+  .ring-bg {
+    fill: none;
+    stroke: var(--bg-soft);
+    stroke-width: 10;
+  }
+
+  .ring-progress {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear, stroke 0.4s ease;
+  }
+
+  body.break-mode .ring-progress { stroke: var(--success); }
+
+  .time-display {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+    transition: color 0.3s ease;
+  }
+
+  .time-display.tick {
+    animation: tickPulse 0.5s ease;
+  }
+
+  .status-line {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    min-height: 18px;
+  }
+
+  .status-line strong { color: var(--text); font-weight: 600; }
+
+  .status-line span { display: inline-block; animation: fadeIn 0.4s ease; }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  button {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 13px 18px;
+    font-size: 14px;
+    transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  button:hover { transform: translateY(-2px); }
+  button:active { transform: translateY(1px) scale(0.98); }
+
+  #startPause {
+    background: var(--accent);
+    color: #06122c;
+    flex: 1;
+    box-shadow: 0 6px 18px -6px rgba(91,140,255,0.55);
+  }
+  #startPause:hover { background: var(--accent-strong); box-shadow: 0 10px 22px -6px rgba(91,140,255,0.65); }
+
+  #reset, #skip {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+  }
+  #reset:hover, #skip:hover { color: var(--text); border-color: #33456e; }
+
+  /* ---------- Sidebar (stats/settings) ---------- */
+  .panel-side {
+    padding: 44px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    background: var(--bg-soft);
+  }
+
+  .side-block h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 14px;
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row .label { color: var(--text-muted); }
+  .stat-row .value {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+  .stat-row .value.bump { animation: tickPulse 0.4s ease; }
+
+  .cycle-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .dot {
+    width: 22px;
+    height: 6px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  .dot.filled {
+    background: var(--accent);
+    animation: dashPop 0.4s ease;
+  }
+
+  .schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .schedule-item {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    transition: transform 0.2s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .schedule-item:hover {
+    transform: translateX(3px);
+  }
+
+  .schedule-item.current {
+    color: var(--text);
+    border-color: var(--accent-soft);
+    background: rgba(91,140,255,0.08);
+    animation: popIn 0.4s ease both;
+  }
+
+  footer {
+    text-align: center;
+    padding: 28px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-subtle);
+    animation: fadeIn 1s ease both;
+    animation-delay: 0.6s;
+  }
+
+  @media (max-width: 720px) {
+    .panel { grid-template-columns: 1fr; }
+    .panel-main { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+    header.nav { padding: 18px 20px; }
+    nav.links { display: none; }
+    main { padding: 40px 16px 80px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="brand">
+    <span class="brand-mark">F</span>
+    Focus
+  </div>
+  <nav class="links">
+    <a href="#">Timer</a>
+    <a href="#">Sessions</a>
+    <a href="#">About</a>
+  </nav>
+  <div class="nav-cta">kannethchamp@gmail.com</div>
+</header>
+
+<main>
+  <span class="eyebrow"><span class="dot"></span>Session in progress</span>
+  <h1 class="title">Deep work, timed right.</h1>
+  <p class="subtitle">25 minutes of focus, 5 minutes to recover. A long break every four rounds keeps you sharp without burning out.</p>
+
+  <div class="panel">
+    <div class="panel-main reveal reveal-left">
+      <div class="mode-tabs">
+        <div class="mode-tab" id="tabWork">Work</div>
+        <div class="mode-tab" id="tabBreak">Break</div>
+        <div class="mode-tab" id="tabLong">Long Break</div>
+      </div>
+
+      <div class="ring-wrap">
+        <svg width="260" height="260" viewBox="0 0 260 260">
+          <circle class="ring-bg" cx="130" cy="130" r="115"></circle>
+          <circle class="ring-progress" id="ringProgress" cx="130" cy="130" r="115"
+                  stroke-dasharray="722.6" stroke-dashoffset="0"></circle>
+        </svg>
+        <div class="time-display" id="timeDisplay">25:00</div>
+      </div>
+
+      <div class="status-line">Round <strong id="roundNum">1</strong> of 4 · <span id="statusText">Ready to start</span></div>
+
+      <div class="controls">
+        <button id="startPause">Start focus session</button>
+        <button id="reset">Reset</button>
+        <button id="skip">Skip</button>
+      </div>
+    </div>
+
+    <div class="panel-side reveal reveal-right">
+      <div class="side-block">
+        <h3>Today</h3>
+        <div class="stat-row reveal">
+          <span class="label">Completed sessions</span>
+          <span class="value" id="statSessions">0</span>
+        </div>
+        <div class="stat-row reveal">
+          <span class="label">Focus time</span>
+          <span class="value" id="statFocusTime">0m</span>
+        </div>
+        <div class="stat-row reveal">
+          <span class="label">Current round</span>
+          <span class="value" id="statRound">1 / 4</span>
+        </div>
+        <div class="cycle-dots" id="dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <div class="side-block">
+        <h3>Schedule</h3>
+        <div class="schedule-list">
+          <div class="schedule-item current reveal" id="schedWork"><span>Focus</span><span>25:00</span></div>
+          <div class="schedule-item reveal" id="schedBreak"><span>Short break</span><span>05:00</span></div>
+          <div class="schedule-item reveal" id="schedLong"><span>Long break</span><span>15:00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="reveal">Focus · A simple Pomodoro timer &mdash; runs entirely in your browser, no data leaves your device.</footer>
+
+<script>
+  const WORK_MIN = 25;
+  const BREAK_MIN = 5;
+  const LONG_BREAK_MIN = 15;
+  const CYCLES_BEFORE_LONG_BREAK = 4;
+
+  const CIRCUMFERENCE = 2 * Math.PI * 115;
+
+  let mode = 'work'; // 'work' | 'break' | 'longbreak'
+  let secondsLeft = WORK_MIN * 60;
+  let totalSeconds = WORK_MIN * 60;
+  let running = false;
+  let timerId = null;
+  let completedWorkSessions = 0;
+  let totalFocusSeconds = 0;
+
+  const timeDisplay = document.getElementById('timeDisplay');
+  const statusText = document.getElementById('statusText');
+  const roundNum = document.getElementById('roundNum');
+  const ringProgress = document.getElementById('ringProgress');
+  const ringWrap = document.querySelector('.ring-wrap');
+  const startPauseBtn = document.getElementById('startPause');
+  const resetBtn = document.getElementById('reset');
+  const skipBtn = document.getElementById('skip');
+  const dots = document.querySelectorAll('.dot');
+  const tabWork = document.getElementById('tabWork');
+  const tabBreak = document.getElementById('tabBreak');
+  const tabLong = document.getElementById('tabLong');
+  const schedWork = document.getElementById('schedWork');
+  const schedBreak = document.getElementById('schedBreak');
+  const schedLong = document.getElementById('schedLong');
+  const statSessions = document.getElementById('statSessions');
+  const statFocusTime = document.getElementById('statFocusTime');
+  const statRound = document.getElementById('statRound');
+
+  ringProgress.setAttribute('stroke-dasharray', CIRCUMFERENCE.toFixed(1));
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60).toString().padStart(2, '0');
+    const sec = (s % 60).toString().padStart(2, '0');
+    return `${m}:${sec}`;
+  }
+
+  function bump(el) {
+    el.classList.remove('bump');
+    // Force reflow so the animation can restart.
+    void el.offsetWidth;
+    el.classList.add('bump');
+  }
+
+  function updateDisplay() {
+    timeDisplay.textContent = formatTime(secondsLeft);
+    timeDisplay.classList.remove('tick');
+    void timeDisplay.offsetWidth;
+    timeDisplay.classList.add('tick');
+
+    ringWrap.classList.toggle('running', running);
+
+    const progress = 1 - secondsLeft / totalSeconds;
+    ringProgress.style.strokeDashoffset = (CIRCUMFERENCE * progress).toFixed(1);
+
+    [tabWork, tabBreak, tabLong].forEach(t => t.classList.remove('active'));
+    [schedWork, schedBreak, schedLong].forEach(s => s.classList.remove('current'));
+    document.body.classList.remove('break-mode');
+
+    if (mode === 'work') {
+      tabWork.classList.add('active');
+      schedWork.classList.add('current');
+      statusText.textContent = running ? 'Focusing' : 'Ready to start';
+      startPauseBtn.textContent = running ? 'Pause' : 'Start focus session';
+    } else if (mode === 'break') {
+      tabBreak.classList.add('active');
+      schedBreak.classList.add('current');
+      document.body.classList.add('break-mode');
+      statusText.textContent = running ? 'On a short break' : 'Break ready';
+      startPauseBtn.textContent = running ? 'Pause' : 'Start break';
+    } else {
+      tabLong.classList.add('active');
+      schedLong.classList.add('current');
+      document.body.classList.add('break-mode');
+      statusText.textContent = running ? 'On a long break' : 'Long break ready';
+      startPauseBtn.textContent = running ? 'Pause' : 'Start long break';
+    }
+
+    const roundInCycle = (completedWorkSessions % CYCLES_BEFORE_LONG_BREAK) + 1;
+    roundNum.textContent = roundInCycle;
+    statRound.textContent = `${roundInCycle} / ${CYCLES_BEFORE_LONG_BREAK}`;
+    statSessions.textContent = completedWorkSessions;
+    statFocusTime.textContent = `${Math.floor(totalFocusSeconds / 60)}m`;
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('filled', i < completedWorkSessions % CYCLES_BEFORE_LONG_BREAK);
+    });
+
+    document.title = `${formatTime(secondsLeft)} — ${statusText.textContent}`;
+  }
+
+  // Web Audio API — satisfying mechanical click, no external files needed.
+  let audioCtx = null;
+  function ensureAudioCtx() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+  }
+
+  function playClick() {
+    try {
+      const ctx = ensureAudioCtx();
+      const now = ctx.currentTime;
+
+      const clickBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.03, ctx.sampleRate);
+      const data = clickBuffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3);
+      }
+      const noiseSource = ctx.createBufferSource();
+      noiseSource.buffer = clickBuffer;
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'highpass';
+      noiseFilter.frequency.value = 2000;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.5, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+      noiseSource.connect(noiseFilter).connect(noiseGain).connect(ctx.destination);
+      noiseSource.start(now);
+
+      const osc = ctx.createOscillator();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+      const oscGain = ctx.createGain();
+      oscGain.gain.setValueAtTime(0.3, now);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+      osc.connect(oscGain).connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    } catch (e) {
+      // Audio not available; fail silently.
+    }
+  }
+
+  function setMode(newMode) {
+    mode = newMode;
+    if (mode === 'work') {
+      totalSeconds = WORK_MIN * 60;
+    } else if (mode === 'break') {
+      totalSeconds = BREAK_MIN * 60;
+    } else {
+      totalSeconds = LONG_BREAK_MIN * 60;
+    }
+    secondsLeft = totalSeconds;
+    updateDisplay();
+  }
+
+  function advanceCycle() {
+    playClick();
+    if (mode === 'work') {
+      completedWorkSessions++;
+      const isLongBreak = completedWorkSessions % CYCLES_BEFORE_LONG_BREAK === 0;
+      setMode(isLongBreak ? 'longbreak' : 'break');
+      bump(statSessions);
+    } else {
+      setMode('work');
+    }
+    bump(statRound);
+    ringWrap.animate(
+      [{ transform: 'scale(1)' }, { transform: 'scale(1.06)' }, { transform: 'scale(1)' }],
+      { duration: 420, easing: 'ease-out' }
+    );
+  }
+
+  function tick() {
+    secondsLeft--;
+    if (mode === 'work') totalFocusSeconds++;
+    if (secondsLeft < 0) {
+      advanceCycle();
+    } else {
+      updateDisplay();
+    }
+  }
+
+  function start() {
+    if (running) return;
+    ensureAudioCtx();
+    running = true;
+    timerId = setInterval(tick, 1000);
+    updateDisplay();
+  }
+
+  function pause() {
+    running = false;
+    clearInterval(timerId);
+    updateDisplay();
+  }
+
+  function reset() {
+    pause();
+    completedWorkSessions = 0;
+    totalFocusSeconds = 0;
+    setMode('work');
+  }
+
+  function skip() {
+    pause();
+    advanceCycle();
+  }
+
+  startPauseBtn.addEventListener('click', () => {
+    running ? pause() : start();
+  });
+  resetBtn.addEventListener('click', reset);
+  skipBtn.addEventListener('click', skip);
+
+  updateDisplay();
+
+  // ---------- Scroll reveal ----------
+  // Stagger the rows inside each cascading group before observing them.
+  document.querySelectorAll('.stat-row.reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.09}s`;
+  });
+  document.querySelectorAll('.schedule-item.reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.09}s`;
+  });
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReducedMotion) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  } else if ('IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  }
+</script>
+</body>
+</html>

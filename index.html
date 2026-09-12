@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kenneth's personal portfolio website showcasing skills, projects and experience.">
+    <meta name="author" content="Kenneth">
+    <meta name="keywords" content="portfolio, web developer, HTML, CSS, JavaScript">
+    <title>Kenneth | Portfolio</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2213%22 font-size=%2214%22>K</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header" id="top">
+        <nav class="navbar" aria-label="Primary">
+            <a class="brand" href="#top">Kenneth<span class="dot">.</span></a>
+            <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden>
+            <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </label>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a class="nav-cta" href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <section id="about" class="section hero">
+            <figure class="avatar">
+                <img class="avatar-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%234a5fd9'/><text x='50' y='58' font-size='40' text-anchor='middle' fill='white' font-family='sans-serif'>K</text></svg>" alt="Portrait initial of Kenneth">
+                <figcaption class="tagline">Web Developer &amp; Lifelong Learner</figcaption>
+            </figure>
+            <h1>Hi, I'm Kenneth <abbr title="also known as">a.k.a.</abbr> a front-end enthusiast</h1>
+            <p class="lead">
+                I build clean, accessible websites while learning the <mark>full breadth of web fundamentals</mark>.
+                This portfolio doubles as a practice ground for <strong>semantic markup</strong> and
+                <em>modern front-end craft</em>.
+            </p>
+            <address class="contact-line">
+                Based in Earth &middot;
+                <a href="mailto:kannethchamp@gmail.com">kannethchamp@gmail.com</a>
+            </address>
+            <p class="status-line">
+                Available since <time datetime="2026-01-01">January 2026</time> &middot;
+                Status: <ins>Open to work</ins> <del>Busy</del>
+            </p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="#projects">View my work</a>
+                <a class="btn btn-outline" href="#contact">Get in touch</a>
+            </div>
+        </section>
+
+        <section id="skills" class="section">
+            <h2>Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <label for="html-skill">HTML</label>
+                    <meter id="html-skill" min="0" max="100" value="90" low="30" high="70" optimum="100">90%</meter>
+                </div>
+                <div class="skill-item">
+                    <label for="css-skill">CSS</label>
+                    <meter id="css-skill" min="0" max="100" value="75" low="30" high="70" optimum="100">75%</meter>
+                </div>
+                <div class="skill-item">
+                    <label for="js-skill">JavaScript</label>
+                    <progress id="js-skill" max="100" value="60">60%</progress>
+                </div>
+            </div>
+            <ul class="skill-list">
+                <li>Semantic HTML5 &amp; accessibility (<abbr title="Web Content Accessibility Guidelines">WCAG</abbr> basics)</li>
+                <li>Responsive layout with Flexbox and Grid</li>
+                <li>Forms, validation and progressive enhancement</li>
+            </ul>
+        </section>
+
+        <section id="projects" class="section">
+            <h2>Projects</h2>
+            <div class="project-grid">
+                <article class="project-card">
+                    <h3>ToDoFlow</h3>
+                    <p>A fast, minimal to-do app inspired by Apple and Linear &mdash; due dates, priorities, daily repeats, drag-to-reorder and a local XP/leveling profile, no sign-up required.</p>
+                    <p class="project-tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></p>
+                    <p><a class="card-link" href="projects/todoflow/index.html" target="_blank" rel="noopener noreferrer">Open project &rarr;</a></p>
+                </article>
+                <article class="project-card">
+                    <h3>St. Paul's English High School</h3>
+                    <p>A cinematic marketing site for a Karachi school founded in 1940 &mdash; scroll-driven canvas hero, GSAP-powered timeline and gallery, and an admissions journey.</p>
+                    <p class="project-tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">GSAP</span><span class="tag">JavaScript</span></p>
+                    <p><a class="card-link" href="projects/stpauls.html" target="_blank" rel="noopener noreferrer">Open project &rarr;</a></p>
+                </article>
+                <article class="project-card">
+                    <h3>Focus &mdash; Pomodoro Timer</h3>
+                    <p>A single-file Pomodoro timer with an animated progress ring, session stats, and satisfying Web Audio API click sounds &mdash; built to keep deep work on track.</p>
+                    <p class="project-tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></p>
+                    <p><a class="card-link" href="projects/pomodoro-timer.html" target="_blank" rel="noopener noreferrer">Open project &rarr;</a></p>
+                </article>
+                <article class="project-card">
+                    <h3>BrainBoost</h3>
+                    <p>A gamified study companion covering ten Markdown concepts through a quiz arena, flashcards and a memory-match game, with XP, levels, and a local leaderboard.</p>
+                    <p class="project-tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></p>
+                    <p><a class="card-link" href="projects/brainboost.html" target="_blank" rel="noopener noreferrer">Open project &rarr;</a></p>
+                </article>
+                <article class="project-card">
+                    <h3>This Portfolio</h3>
+                    <p>You're looking at it &mdash; hand-built with semantic HTML and hand-written CSS.</p>
+                    <p><a class="card-link" href="#top">Back to top &uarr;</a></p>
+                </article>
+            </div>
+        </section>
+
+        <section id="experience" class="section">
+            <h2>Experience &amp; Education</h2>
+            <ol class="timeline">
+                <li class="timeline-item">
+                    <h3>HTML &amp; Web Fundamentals Course</h3>
+                    <p class="muted"><time datetime="2026">2026</time> &middot; Self-paced</p>
+                    <p>Learning semantic markup, forms, tables, media and accessibility &mdash; then styling it all with hand-written CSS.</p>
+                </li>
+            </ol>
+            <h3>Quick reference</h3>
+            <table class="data-table">
+                <caption>Element cheat-sheet used on this page</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">Elements</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Structure</td>
+                        <td><code>header, nav, main, section, article, aside, footer</code></td>
+                    </tr>
+                    <tr>
+                        <td>Text</td>
+                        <td><code>strong, em, mark, small, sub, sup, abbr, code, kbd, samp</code></td>
+                    </tr>
+                    <tr>
+                        <td>Forms</td>
+                        <td><code>form, fieldset, label, input, select, textarea, button</code></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">More on <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element" target="_blank" rel="noopener noreferrer">MDN HTML reference</a></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <dl class="fact-list">
+                <dt>Favorite unit</dt>
+                <dd><code>clamp()</code> for fluid type</dd>
+                <dt>Favorite tag</dt>
+                <dd><code>&lt;details&gt;</code> for free interactivity</dd>
+            </dl>
+        </section>
+
+        <section id="testimonials" class="section">
+            <h2>Testimonials</h2>
+            <blockquote class="testimonial" cite="https://example.com/review">
+                <p>&ldquo;Kenneth writes tidy, well-structured markup and is always eager to learn.&rdquo;</p>
+                <footer>&mdash; <cite>A Course Mentor</cite></footer>
+            </blockquote>
+        </section>
+
+        <section id="faq" class="section">
+            <h2>FAQ</h2>
+            <details class="faq-item">
+                <summary>What did you build this portfolio with?</summary>
+                <p>Plain <code>HTML5</code> and hand-written <code>CSS3</code> &mdash; no frameworks.</p>
+            </details>
+            <details class="faq-item">
+                <summary>How do I run the sample code?</summary>
+                <p>Press <kbd>Ctrl</kbd> + <kbd>O</kbd> in your browser and open <samp>index.html</samp>, or use a live server extension.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Is x&sup2; + y&sup2; = r&sup2; relevant here?</summary>
+                <p>Only as a fun example of <code>&lt;sup&gt;</code> superscripts and H<sub>2</sub>O of <code>&lt;sub&gt;</code> subscripts.</p>
+            </details>
+        </section>
+
+        <section id="contact" class="section">
+            <h2>Contact Me</h2>
+            <form class="contact-form" action="mailto:kannethchamp@gmail.com" method="get">
+                <fieldset class="form-fieldset">
+                    <legend>Your details</legend>
+
+                    <div class="form-group">
+                        <label for="name">Full name</label>
+                        <input type="text" id="name" name="name" placeholder="Jane Doe" required minlength="2">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="9876543210">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Website</label>
+                        <input type="url" id="website" name="website" placeholder="https://example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meeting-date">Preferred meeting date</label>
+                        <input type="date" id="meeting-date" name="meeting-date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget">Budget (USD)</label>
+                        <input type="number" id="budget" name="budget" min="0" max="10000" step="50" value="500">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="urgency">Urgency</label>
+                        <input type="range" id="urgency" name="urgency" min="1" max="5" value="3">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="color">Pick a theme color</label>
+                        <input type="color" id="color" name="color" value="#4a5fd9">
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-fieldset">
+                    <legend>Project details</legend>
+
+                    <div class="form-group">
+                        <label for="topic">Topic</label>
+                        <select id="topic" name="topic">
+                            <optgroup label="Web">
+                                <option value="portfolio">Portfolio site</option>
+                                <option value="webapp">Web application</option>
+                            </optgroup>
+                            <optgroup label="Other">
+                                <option value="consulting">Consulting</option>
+                                <option value="other">Other</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-inline">
+                        <span>Preferred contact method</span><br>
+                        <input type="radio" id="contact-email" name="contact-method" value="email" checked>
+                        <label for="contact-email">Email</label>
+                        <input type="radio" id="contact-phone" name="contact-method" value="phone">
+                        <label for="contact-phone">Phone</label>
+                    </div>
+
+                    <div class="form-group form-group-inline">
+                        <input type="checkbox" id="newsletter" name="newsletter" value="yes">
+                        <label for="newsletter">Subscribe to updates</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Tell me about your project" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resume">Attach a file</label>
+                        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx">
+                    </div>
+
+                    <datalist id="popular-budgets">
+                        <option value="500"></option>
+                        <option value="1000"></option>
+                        <option value="2500"></option>
+                    </datalist>
+                </fieldset>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Send message</button>
+                    <button class="btn btn-outline" type="reset">Clear form</button>
+                </div>
+                <output class="form-note" for="budget name">All fields save locally until you submit.</output>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="social-links">
+            <a class="social-link" href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a class="social-link" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a class="social-link" href="mailto:kannethchamp@gmail.com">Email</a>
+        </div>
+        <p class="copyright"><small>&copy; <time datetime="2026">2026</time> Kenneth. Built for learning &mdash; all rights reserved.</small></p>
+    </footer>
+</body>
+</html>
