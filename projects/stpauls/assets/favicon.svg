@@ -1,0 +1,12 @@
+<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+  <path d="M100,0 L103,7 L110,9 L103,11 L100,18 L97,11 L90,9 L97,7 Z" fill="#F6E4C8"/>
+  <path d="M100,10 L156,10 C170,10 182,20 182,36 L182,104 C182,166 144,202 100,230 C56,202 18,166 18,104 L18,36 C18,20 30,10 44,10 Z" fill="#7E8CA0" stroke="#4F5C70" stroke-width="4"/>
+  <path d="M100,140 L78,168 M100,140 L85,172 M100,140 L93,175 M100,140 L100,176 M100,140 L107,175 M100,140 L115,172 M100,140 L122,168" stroke="#F6E4C8" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="100" cy="138" r="5" fill="#F6E4C8" stroke="#4F5C70" stroke-width="1.5"/>
+  <path d="M55,148 L57,153 L62,154 L57,155 L55,160 L53,155 L48,154 L53,153 Z" fill="#F6E4C8"/>
+  <path d="M145,148 L147,153 L152,154 L147,155 L145,160 L143,155 L138,154 L143,153 Z" fill="#F6E4C8"/>
+  <path d="M-6,118 L18,110 L182,110 L206,118 L182,126 L18,126 Z" fill="#F6E4C8" stroke="#4F5C70" stroke-width="2.5"/>
+  <text x="100" y="122" text-anchor="middle" textLength="150" lengthAdjust="spacingAndGlyphs" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="700" fill="#3E2F22" letter-spacing="0.5">ST. PAUL'S ENGLISH HIGH SCHOOL</text>
+  <path d="M32,200 L50,196 L150,196 L168,200 L150,205 L50,205 Z" fill="#F6E4C8" stroke="#4F5C70" stroke-width="2"/>
+  <text x="100" y="203" text-anchor="middle" textLength="112" lengthAdjust="spacingAndGlyphs" font-family="Georgia, 'Times New Roman', serif" font-size="8" font-weight="700" fill="#3E2F22" letter-spacing="1">AD DESTINATUM PERSEQUOR</text>
+</svg>

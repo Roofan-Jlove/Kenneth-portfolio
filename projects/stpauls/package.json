@@ -1,0 +1,9 @@
+{
+  "name": "stpauls-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "St. Paul's English High School website — static site with a serverless chat assistant.",
+  "engines": {
+    "node": ">=18"
+  }
+}
