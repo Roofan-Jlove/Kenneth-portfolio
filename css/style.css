@@ -426,7 +426,12 @@ meter, progress {
     border: none;
 }
 meter::-webkit-meter-bar { background: var(--color-surface-alt); border-radius: var(--radius-pill); }
-meter::-webkit-meter-optimum-value { background: linear-gradient(90deg, var(--color-primary), var(--color-accent)); }
+meter::-webkit-meter-optimum-value,
+meter::-webkit-meter-suboptimal-value,
+meter::-webkit-meter-even-less-good-value {
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+}
+meter::-moz-meter-bar { background: linear-gradient(90deg, var(--color-primary), var(--color-accent)); }
 progress::-webkit-progress-bar { background: var(--color-surface-alt); border-radius: var(--radius-pill); }
 progress::-webkit-progress-value { background: linear-gradient(90deg, var(--color-primary), var(--color-accent)); border-radius: var(--radius-pill); }
 progress { color: var(--color-primary); }
